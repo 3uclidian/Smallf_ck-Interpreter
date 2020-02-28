@@ -73,13 +73,13 @@ local function interpret(code, tape)
 	print("\n\n")
 	local cmdCount = 0
 	while 0 < pointer and pointer <= #tapeTable and instruction <= #codeTable do
-		io.write("\27[2F") -- move 2 lines up
+		io.write("\27[2A")
+		io.write("\27[G")
 		io.write("\27[K") -- erase line
-		io.write( table.concat(tapeTable) .. "   " .. code)
-		io.write("\27[E") -- cursor down
+		io.write(table.concat(tapeTable) .. "   " .. code, "\n")
 		io.write("\27[K") -- erase line
-		io.write( (" "):rep(pointer-1) .. "^" .. (" "):rep(#tapeTable-pointer+3) .. (" "):rep(instruction-1) .. "^"  )
-		io.write("\27[E")
+		io.write((" "):rep(pointer-1) .. "^" .. (" "):rep(#tapeTable-pointer+3) .. (" "):rep(instruction-1) .. "^")
+		io.write("\n")
 		io.flush()
 		
 		if cmdCount > 2^12 then
@@ -96,6 +96,7 @@ local function interpret(code, tape)
 		end
 		socket.sleep(0.05)
 	end
+	print("")
 	print("---STEPS TAKEN: ".. cmdCount .."---")
 	print("---CODE DISASSEMBLY---")
 	print("#", "BRACKET", "CMD", "DESCRIPTION")
@@ -113,5 +114,5 @@ end
 print("Smallfuck interpreter:")
 print("Code: "..code)
 print("Tape: "..tape)
-print('')
+print("")
 print("\nINPUT:  ".. tape .."\nRESULT: "..interpret(code, tape))
